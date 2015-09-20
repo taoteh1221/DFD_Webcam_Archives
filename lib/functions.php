@@ -1,6 +1,6 @@
 <?php
 
-function chart_array($levels_array, $measure, $length) {
+function chart_array($levels_array, $measure) {
 
 $last_time = 0;
 
@@ -20,18 +20,26 @@ $last_time = 0;
         
         //var_dump($time_array);
         
+        $raw_seconds = strval(trim($time_array[0]));
+        
         $seconds = strval(round(trim($time_array[0])));
+        
+        $raw_minutes = ( $raw_seconds / 60 );
+        
+        $minutes = round(( $raw_seconds / 60 ));
                 
                 
-                if ( $length > 2 && $length < 5 ) {
-                $minutes = number_format(( $seconds / 60 ), 1, '.', '');
+                if ( $minutes > 1 && $minutes < 9 ) {
+                $minutes = number_format(( $raw_seconds / 60 ), 1, '.', '');
                 }
-                elseif ( $length > 4 && $length < 91 ) {
-                $minutes = round(( $seconds / 60 ));
+                
+                
+        $hours = number_format(( $raw_minutes / 60 ), 1, '.', '');
+                
+                
+                if ( $minutes > 39 && $minutes < 121 ) {
+                $hours = number_format(( $raw_minutes / 60 ), 2, '.', '');
                 }
-                
-                
-        $hours = number_format(( $minutes / 60 ), 2, '.', '');
                 
                 
                 if ( $measure == 'Minutes' ) {
