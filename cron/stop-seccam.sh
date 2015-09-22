@@ -20,7 +20,7 @@ START=$(date +%Y__%m-%d__%H%Mhours -d  "810 minutes ago")
 
 #Analyze sound levels, and get time stamps for high levels
 /usr/bin/sox camBedroom_$START.mp3 camBedroom_$START.dat
-/usr/bin/awk '$2 > 0.024 { print }' < camBedroom_$START.dat > camBedroom_$START.levels
+/usr/bin/awk '$2 > 0.04 { print }' < camBedroom_$START.dat > camBedroom_$START.levels
 
 #Create thumbnail
 /bin/ffmpeg -i camBedroom_$START.mp4 -ss 00:00:05.000 -vframes 1 camBedroom_$START.png > /dev/null 2>&1 &
@@ -34,4 +34,4 @@ sleep 2
 #Locked, could not delete UNTIL AFTER ZEROING OUT THE FILESIZE BY MAKING AN EMPTY FILE -- KEEP THIS LINE!
 > camBedroom_$START.dat
 rm -f camBedroom_$START.dat
-#rm *.asf
+rm *.asf

@@ -1,0 +1,1 @@
+<img src='chart.php?levels=<?=$_GET['levels']?>' border='0' />
