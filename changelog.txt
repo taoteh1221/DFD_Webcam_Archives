@@ -22,3 +22,13 @@
 -Config file
 -------------------------------------------------------------------
 
+-------------------------------------------------------------------
+2015/Sept/23
+-------------------------------------------------------------------
+0.9.3:
+-Minor chart axis bug fix
+-Theoretically better noise charting, by creating the mp3 (used for noise charting) from the indexed mp4 instead of the raw un-indexed asf file
+-Cron jobs updated to be user-friendly with configuration sections, and set to specifically run as bash scripting
+-------------------------------------------------------------------
+
+

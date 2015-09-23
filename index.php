@@ -57,7 +57,7 @@ color: red;
     
 <?php
 
-$the_directory_path = "./WebCams";
+$the_directory_path = "./videos";
         
 		// Read file list
 		if ($dir = @opendir("$the_directory_path")) {
@@ -87,7 +87,7 @@ $app_var = str_replace("-", "_", $app_var);
 
 
 // Reuse in chart.php to save on resource usage
-$_SESSION['levels_data_'.$app_var] = file_get_contents('WebCams/'.str_replace(".mp4", ".levels", $filename));
+$_SESSION['levels_data_'.$app_var] = file_get_contents('videos/'.str_replace(".mp4", ".levels", $filename));
 $levels_data = $_SESSION['levels_data_'.$app_var];
 
 $raw_levels_array = levels_to_array($levels_data);
@@ -140,8 +140,8 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 
     <div class='center_content' align='center'>
 	
-	<video class='video_hover' id='video_<?=$app_var?>' poster="WebCams/<?=str_replace(".mp4", ".png", $filename)?>" width="640" height="480" preload="none" controls='controls' onclick="vidplay_<?=$app_var?>()">
-	<source src="WebCams/<?=$filename?>" />
+	<video class='video_hover' id='video_<?=$app_var?>' poster="videos/<?=str_replace(".mp4", ".png", $filename)?>" width="640" height="480" preload="none" controls='controls' onclick="vidplay_<?=$app_var?>()">
+	<source src="videos/<?=$filename?>" />
 	<progress max="100" value="80"></progress>
 	</video>
 	
@@ -150,7 +150,7 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
     <div class='center_content' align='center'>
 	
 	<audio class='' id='audio_<?=$app_var?>' controls='controls'>
-	<source src="WebCams/<?=str_replace(".mp4", ".mp3", $filename)?>" type="audio/mpeg">
+	<source src="videos/<?=str_replace(".mp4", ".mp3", $filename)?>" type="audio/mpeg">
 	</audio>
 	
     </div>
@@ -220,8 +220,8 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
     <div class='center_content' align='center'>
 	
 	<b>
-	MP4 Video and Audio Download: <a href='WebCams/<?=$filename?>' target='_blank'><?=$filename?></a><br /><br />
-	MP3 <i>Audio Only</i> Download (smaller file): <a href='WebCams/<?=str_replace(".mp4", ".mp3", $filename)?>' target='_blank'><?=str_replace(".mp4", ".mp3", $filename)?></a><br /><br />
+	MP4 Video and Audio Download: <a href='videos/<?=$filename?>' target='_blank'><?=$filename?></a><br /><br />
+	MP3 <i>Audio Only</i> Download (smaller file): <a href='videos/<?=str_replace(".mp4", ".mp3", $filename)?>' target='_blank'><?=str_replace(".mp4", ".mp3", $filename)?></a><br /><br />
 	(Opposite-click download links, 'Save As' to download)<br /><br />
 	</b>
     
