@@ -20,6 +20,7 @@
 -Further tweaking / debugging of graphs, other minor revisions
 -Video / Audio control GUI, with custom / preset positions etc
 -Config file
+-Amplitude minimum variable in config file
 -------------------------------------------------------------------
 
 -------------------------------------------------------------------
@@ -29,6 +30,15 @@
 -Minor chart axis bug fix
 -Theoretically better noise charting, by creating the mp3 (used for noise charting) from the indexed mp4 instead of the raw un-indexed asf file
 -Cron jobs updated to be user-friendly with configuration sections, and set to specifically run as bash scripting
+-------------------------------------------------------------------
+
+-------------------------------------------------------------------
+2015/Sept/24
+-------------------------------------------------------------------
+0.9.4:
+-Bug fixes and tweaks
+-Title variable in config file
+-Delete old files cron job script
 -------------------------------------------------------------------
 
 

@@ -7,7 +7,7 @@ require_once 'lib/functions.php';
 <html>
 <head>
     
-<title>Night Vision Webcam - Automated Archiving (last 4 days)</title>
+<title><?=$title?></title>
 
 <script src="js/jquery.min.js"></script>
 
@@ -53,7 +53,7 @@ color: red;
     
     <div align='center' id='loading'> <h1>Loading, please wait...</h1> </div>
     
-    <h1>Night Vision Webcam - Automated Archiving (last 4 days)</h1>
+    <h1><?=$title?></h1>
     
 <?php
 
@@ -136,7 +136,7 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 <fieldset align='center' style='position: relative; margin: 15px; padding: 15px; border: 2px solid black;  width: 955px; height: auto; background: white;'>
     <legend style='position: relative; top: -9px; font-weight: bold; background: white; border-top: 2px solid black; border-left: 2px solid black; border-right: 2px solid black;'> <?=str_replace(".mp4", "", $filename)?> </legend>
     
-    <p align='left'><i style='color: red;'>Only MP4 video is supported in this web application</i>. Alternately you can try downloading the video directly to your computer (links are below) and running it there, <i style='color: red;'>if you hear sound but cannot see video</i> (or try Google Chrome instead).</p>
+    <p align='left'><i style='color: red;'>Only MP4 video and MP3 audio are supported in this web application</i>. You can download the media directly to your computer (links are below) and run it there, <i style='color: red;'>if you hear sound but cannot see video / etc</i>.</p>
 
     <div class='center_content' align='center'>
 	
@@ -147,6 +147,11 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 	
     </div>
     
+    
+    <div class='center_content' align='center'>
+    To show additional video controls, hover mouse pointer over video while playing.
+    </div>
+    
     <div class='center_content' align='center'>
 	
 	<audio class='' id='audio_<?=$app_var?>' controls='controls'>
@@ -154,15 +159,12 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 	</audio>
 	
     </div>
-    
-    <div class='center_content' align='center'>Hover the mouse pointer over top of video to see and adjust the video location slider / sound volume / basic controls.</div>
-    
     <div class='center_content' align='center'>
 	
 	
-	Use controls for: <select id='switch_<?=$app_var?>'>
-	    <option value='video'> Video </option>
-	    <option value='audio'> Audio </option>
+	Use player controls for: <select id='switch_<?=$app_var?>'>
+	    <option value='video'> Video MP4 </option>
+	    <option value='audio' selected> Audio MP3 </option>
 	</select>  &nbsp;
 	<button id="restart_<?=$app_var?>" onclick="restart_<?=$app_var?>();"> Restart </button>  &nbsp; 
 	<button id="rew_<?=$app_var?>" onclick="skip_<?=$app_var?>(-30)"> &lt;&lt;&lt; Skip Back </button> &nbsp; 
@@ -202,10 +204,10 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 	    <option value='seconds' <?=( strtolower($measure) == 'seconds' ? 'selected' : '' )?>> Seconds </option>
 	    <option value='minutes' <?=( strtolower($measure) == 'minutes' ? 'selected' : '' )?>> Minutes </option>
 	</select>, and skip back <select id="skip_xsec_<?=$app_var?>">
-	    <option value='5'> 5 </option>
+	    <option value='5' selected> 5 </option>
 	    <option value='15'> 15 </option>
 	    <option value='30'> 30 </option>
-	    <option value='45' selected> 45 </option>
+	    <option value='45'> 45 </option>
 	</select> seconds <button onclick="position_<?=$app_var?>()"> Go </button>
 	
     </div>
@@ -213,16 +215,16 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
     <div class='center_content' align='center'>
 	
 	<span style='color: red;'><?=$length?> <?=strtolower($measure)?> of data, displaying amplitudes of <?=$amplitude_minimum?> or greater. <?=( $chart_width > 900 ? 'This chart <i>has a horizontal scroll bar on the bottom</i> because the chart is wide.' : '' )?> <?=( $no_preset ? '<p><b>This media <i>has no amplitude data of '.$amplitude_minimum.' or higher</i>.</b></p>' : '' )?></span><br />
-	<div align='center' style='position: relative; width: 100%; height: 340px;'><iframe align='center' style='position: relative;' width='920' height='335' src='iframe.php?levels=<?=str_replace(".mp4", ".levels", $filename)?>'></iframe></div>
+	<div align='center' style='position: relative; width: 100%; height: auto;'><iframe align='center' style='position: relative;' width='920' height='315' src='iframe.php?levels=<?=str_replace(".mp4", ".levels", $filename)?>'></iframe></div>
 	
     </div>
     
     <div class='center_content' align='center'>
 	
 	<b>
+	(Opposite-click download links below, 'Save As' to download)<br /><br />
 	MP4 Video and Audio Download: <a href='videos/<?=$filename?>' target='_blank'><?=$filename?></a><br /><br />
 	MP3 <i>Audio Only</i> Download (smaller file): <a href='videos/<?=str_replace(".mp4", ".mp3", $filename)?>' target='_blank'><?=str_replace(".mp4", ".mp3", $filename)?></a><br /><br />
-	(Opposite-click download links, 'Save As' to download)<br /><br />
 	</b>
     
     </div>
