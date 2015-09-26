@@ -15,6 +15,6 @@ VIDEO_DIR="/home/YOUR_USERNAME_HERE/path/to/recordings/"
 
 ### END CONFIG #################################################
 
-rm -rfv $SITE_CAM_DIR*
-\cp -r $VIDEO_DIR. $SITE_CAM_DIR
+/usr/bin/rsync -a -v $VIDEO_DIR $SITE_CAM_DIR
+
 chown $WEB_USER:$WEB_USER $SITE_CAM_DIR -R
