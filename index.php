@@ -415,7 +415,7 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 }
 ?>
 
-<p><a href='https://github.com/taoteh1221/DFD_Webcam_Archives/releases' target='_blank'>DFD Webcam Archives v<?=$version?></a></p>
+<p><a href='https://github.com/taoteh1221/DFD_Webcam_Archives/releases' target='_blank'>Version <?=$version?></a></p>
 </div>
 <!-- Wrapper div END -->
 
