@@ -7,8 +7,8 @@
 #Website system username
 WEB_USER="YOUR_WEBUSERNAME_HERE"
 
-# FULL system path to your website "videos" directory
-SITE_CAM_DIR="/home/YOUR_USERNAME_HERE/public_html/seccam_video/videos/"
+# FULL system path to your website "media" directory
+SITE_CAM_DIR="/home/YOUR_USERNAME_HERE/public_html/seccam_video/media/"
 
 # FULL system path to your video recording directory
 VIDEO_DIR="/home/YOUR_USERNAME_HERE/path/to/recordings/"

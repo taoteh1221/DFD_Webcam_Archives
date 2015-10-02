@@ -10,7 +10,6 @@ $app_var = str_replace("-", "_", $app_var);
 
 
 // Reused session data to save on resource usage
-//$levels_data = file_get_contents('videos/'.$_GET['levels']);
 $levels_data = $_SESSION['levels_data_'.$app_var];
 $raw_levels_array = levels_to_array($levels_data);
     

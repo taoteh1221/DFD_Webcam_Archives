@@ -15,42 +15,84 @@ VIDEO_FILE="webcam_recording.asf"
 VIDEO_MINUTES="720"
 
 #Get amplitudes (noise levels) larger than this amplitude
-LEVEL_ABOVE="0.039999"
+LEVEL_ABOVE="0.029999"
+
+# video / audio / both (lowercase)
+INDEX_MODE="both"
 
 ### END CONFIG #################################################
 
 pkill -9 wget
 sleep 2
+
 cd $VIDEO_DIR
+
 NAME="${VIDEO_FILE//.asf}"
 NAME=$NAME"_"
 START_TIME=$(date +%Y__%B-%d__%I-%M%P -d  "$VIDEO_MINUTES minutes ago")
 START_STAMP=$(date +%Y__%m-%d__%H%Mhours -d  "$VIDEO_MINUTES minutes ago")
 
-#mp4
-/bin/ffmpeg -threads 16 -i $VIDEO_FILE \
--vf drawtext="fontfile=/usr/share/fonts/truetype/freefont/FreeSerif.ttf: x=22: y=12: text='Start Time\: $START_TIME   |   Elapsed\: %{pts \\: hms}': fontcolor=white@0.4: fontsize=21: box=1: boxcolor=0x00000999@0.4: boxborderw=6" \
--acodec mp2 -vcodec libx264 -f mp4 $NAME$START_STAMP.mp4 > /dev/null 2>&1
 
-#mp3
-/bin/ffmpeg -threads 16 -i $NAME$START_STAMP.mp4 $NAME$START_STAMP.mp3 > /dev/null 2>&1
-#Might might mirror MP4 audio indexing better for noise charts made from the mp3-only data?
-#/bin/ffmpeg -threads 16 -i $NAME$START_STAMP.mp4 -c:a libfdk_aac -vbr 4 $NAME$START_STAMP.m4a > /dev/null 2>&1
-#/bin/ffmpeg -threads 16 -i $NAME$START_STAMP.m4a -codec:a libmp3lame -qscale:a 2 $NAME$START_STAMP.mp3 > /dev/null 2>&1
+if [ $INDEX_MODE == "both" ]; then
+    
+    
+    #mp4
+    /bin/ffmpeg -threads 16 -i $VIDEO_FILE \
+    -vf drawtext="fontfile=/usr/share/fonts/truetype/freefont/FreeSerif.ttf: x=22: y=12: text='Start Time\: $START_TIME   |   Elapsed\: %{pts \\: hms}': fontcolor=white@0.4: fontsize=21: box=1: boxcolor=0x00000999@0.4: boxborderw=6" \
+    -acodec mp2 -vcodec libx264 -f mp4 $NAME$START_STAMP.mp4 > /dev/null 2>&1
+    
+    #mp3
+    /bin/ffmpeg -threads 16 -i $NAME$START_STAMP.mp4 $NAME$START_STAMP.mp3 > /dev/null 2>&1
+    
+    #Levels file
+    /usr/bin/sox $NAME$START_STAMP.mp3 $NAME$START_STAMP.dat
+    /usr/bin/awk '$2 > '"$LEVEL_ABOVE"' { print }' < $NAME$START_STAMP.dat > $NAME$START_STAMP.levels
+    
+    #Thumbnail
+    /bin/ffmpeg -i $NAME$START_STAMP.mp4 -ss 00:00:05.000 -vframes 1 $NAME$START_STAMP.png > /dev/null 2>&1 &
+    
+    sleep 2
+    
+    > $NAME$START_STAMP.dat
+    rm -f $NAME$START_STAMP.dat
 
-#Levels file
-/usr/bin/sox $NAME$START_STAMP.mp3 $NAME$START_STAMP.dat
-/usr/bin/awk '$2 > '"$LEVEL_ABOVE"' { print }' < $NAME$START_STAMP.dat > $NAME$START_STAMP.levels
 
-#Thumbnail
-/bin/ffmpeg -i $NAME$START_STAMP.mp4 -ss 00:00:05.000 -vframes 1 $NAME$START_STAMP.png > /dev/null 2>&1 &
+elif [ $INDEX_MODE == "video" ]; then
+    
+    
+    #mp4
+    /bin/ffmpeg -threads 16 -i $VIDEO_FILE \
+    -vf drawtext="fontfile=/usr/share/fonts/truetype/freefont/FreeSerif.ttf: x=22: y=12: text='Start Time\: $START_TIME   |   Elapsed\: %{pts \\: hms}': fontcolor=white@0.4: fontsize=21: box=1: boxcolor=0x00000999@0.4: boxborderw=6" \
+    -acodec mp2 -vcodec libx264 -f mp4 $NAME$START_STAMP.mp4 > /dev/null 2>&1
+    
+    #Thumbnail
+    /bin/ffmpeg -i $NAME$START_STAMP.mp4 -ss 00:00:05.000 -vframes 1 $NAME$START_STAMP.png > /dev/null 2>&1 &
+    
+
+elif [ $INDEX_MODE == "audio" ]; then
+    
+    
+    #mp3
+    /bin/ffmpeg -threads 16 -i $VIDEO_FILE $NAME$START_STAMP.mp3 > /dev/null 2>&1
+    
+    #Levels file
+    /usr/bin/sox $NAME$START_STAMP.mp3 $NAME$START_STAMP.dat
+    /usr/bin/awk '$2 > '"$LEVEL_ABOVE"' { print }' < $NAME$START_STAMP.dat > $NAME$START_STAMP.levels
+    
+    sleep 2
+    
+    > $NAME$START_STAMP.dat
+    rm -f $NAME$START_STAMP.dat
+
+
+else
+        echo "No indexing method chosen..."
+
+fi
+
 
 sleep 2
-
+    
 #Purge
 > $VIDEO_FILE
 rm -f $VIDEO_FILE
-> $NAME$START_STAMP.dat
-rm -f $NAME$START_STAMP.dat
-> $NAME$START_STAMP.m4a
-rm -f $NAME$START_STAMP.m4a

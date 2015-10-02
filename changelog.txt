@@ -55,6 +55,14 @@
 -"Move videos" cron job rsync now deletes old files in destination location
 -------------------------------------------------------------------
 
+-------------------------------------------------------------------
+2015/Oct/2
+-------------------------------------------------------------------
+0.9.7:
+-"Stop seccam" cron job setting to index just video, audio, or both
+-Support for new cron setting in index.php (automatically)
+-------------------------------------------------------------------
+
 
 
 

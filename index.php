@@ -57,91 +57,118 @@ color: red;
     
 <?php
 
-$the_directory_path = "./videos";
+$the_directory_path = "./media";
         
 		// Read file list
 		if ($dir = @opendir("$the_directory_path")) {
-			$files_array = array();
+			$mp3_array = array();
+			$mp4_array = array();
 			$the_loop = 0;
 		
 			while (($file = readdir($dir)) !== false) {
 				if ( preg_match("/(.*).mp4/i", $file) ) {
-				$files_array[$the_loop] =  $file;
+				$mp4_array[$the_loop] =  $file;
+				$the_loop = $the_loop + 1;
+				}
+				if ( preg_match("/(.*).mp3/i", $file) ) {
+				$mp3_array[$the_loop] =  $file;
 				$the_loop = $the_loop + 1;
 				}
 			}
 		closedir($dir);
                 
                 //Sort
-		sort($files_array); 
+		sort($mp3_array); 
+		sort($mp4_array); 
 		
 			$the_loop = 0;
-			while ( $files_array[$the_loop] ) {
+			
+			if ( sizeof ($mp3_array) > 0 ) {
+			$file_array = $mp3_array;
+			$is_mp3 = 1;
+			}
+			
+			if ( sizeof ($mp4_array) > 0 ) {
+			$file_array = $mp4_array;
+			$is_mp4 = 1;
+			}
+			    
+			while ( $file_array[$the_loop] ) {
                             
-$filename = $files_array[$the_loop];
+$filename = $file_array[$the_loop];
+$filename = str_replace(".mp3", ".blank", $filename);
+$filename = str_replace(".mp4", ".blank", $filename);
 
-$no_preset = NULL;
+$no_preset = ( $is_mp3 ? NULL : 1);
 
-$app_var = str_replace(".mp4", "", $filename);
+$app_var = str_replace(".blank", "", $filename);
 $app_var = str_replace("-", "_", $app_var);
 
-
-// Reuse in chart.php to save on resource usage
-$_SESSION['levels_data_'.$app_var] = file_get_contents('videos/'.str_replace(".mp4", ".levels", $filename));
-$levels_data = $_SESSION['levels_data_'.$app_var];
-
-$raw_levels_array = levels_to_array($levels_data);
     
-$raw_seconds = $raw_levels_array[(sizeof($raw_levels_array) -1)];
-$raw_seconds = trim($raw_seconds);
-$raw_seconds = preg_replace("/ (.*)/i", "", $raw_seconds);
-$raw_seconds = strval(trim($raw_seconds));
+    if ( $is_mp3 ) {
+	
+    // Reuse in chart.php to save on resource usage
+    $_SESSION['levels_data_'.$app_var] = file_get_contents('media/'.str_replace(".blank", ".levels", $filename));
+    $levels_data = $_SESSION['levels_data_'.$app_var];
     
-$total_raw_seconds = $raw_seconds;
-$total_raw_minutes = ( $total_raw_seconds / 60 );
+    $raw_levels_array = levels_to_array($levels_data);
+	
+    $raw_seconds = $raw_levels_array[(sizeof($raw_levels_array) -1)];
+    $raw_seconds = trim($raw_seconds);
+    $raw_seconds = preg_replace("/ (.*)/i", "", $raw_seconds);
+    $raw_seconds = strval(trim($raw_seconds));
+	
+    $total_raw_seconds = $raw_seconds;
+    $total_raw_minutes = ( $total_raw_seconds / 60 );
+	
+    $total_seconds = round($total_raw_seconds);
+    $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
+    //$total_hours = number_format(( $total_raw_minutes / 60 ), 4, '.', '');
+	
+	
+	    if ( $total_minutes < 2 ) {
+	    $measure = 'Seconds';
+	    $length = $total_seconds;
+	    }
+	    elseif ( $total_minutes > 1 ) {
+	    $measure = 'Minutes';
+	    $length = $total_minutes;
+	    }
+	
     
-$total_seconds = round($total_raw_seconds);
-$total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
-//$total_hours = number_format(( $total_raw_minutes / 60 ), 4, '.', '');
+	$_SESSION['get_arrays_'.$app_var] = chart_array($raw_levels_array, $measure, $total_minutes);
+	$get_arrays = $_SESSION['get_arrays_'.$app_var];
+	$chart_array = $get_arrays[0];
+	$chart_spacing = $get_arrays[1];
+	
+	
+	$chart_width = round( ( $chart_spacing * ( $total_minutes > 9.9999999999 ? 41 : 36 ) ) );
+     
     
-    
-        if ( $total_minutes < 2 ) {
-        $measure = 'Seconds';
-        $length = $total_seconds;
-        }
-        elseif ( $total_minutes > 1 ) {
-        $measure = 'Minutes';
-        $length = $total_minutes;
-        }
-    
-
-    $_SESSION['get_arrays_'.$app_var] = chart_array($raw_levels_array, $measure, $total_minutes);
-    $get_arrays = $_SESSION['get_arrays_'.$app_var];
-    $chart_array = $get_arrays[0];
-    $chart_spacing = $get_arrays[1];
-    
-    
-    $chart_width = round( ( $chart_spacing * ( $total_minutes > 9.9999999999 ? 41 : 36 ) ) );
- 
-
-    if ( sizeof($chart_array) > 0 ) {
+	if ( sizeof($chart_array) > 0 ) {
+	}
+	else {
+	    $no_preset = 1;
+	}
+	
     }
-    else {
-	$no_preset = 1;
-    }
+
 ?>
     
 <!-- START <?=$app_var?> -->
 
 <fieldset align='center' style='position: relative; margin: 15px; padding: 15px; border: 2px solid black;  width: 955px; height: auto; background: white;'>
-    <legend style='position: relative; top: -9px; font-weight: bold; background: white; border-top: 2px solid black; border-left: 2px solid black; border-right: 2px solid black;'> <?=str_replace(".mp4", "", $filename)?> </legend>
+    <legend style='position: relative; top: -9px; font-weight: bold; background: white; border-top: 2px solid black; border-left: 2px solid black; border-right: 2px solid black;'> <?=str_replace(".blank", "", $filename)?> </legend>
     
-    <p align='left'><i style='color: red;'>Only MP4 video and MP3 audio are supported in this web application</i>. You can download the media directly to your computer (links are below) and run it there, <i style='color: red;'>if you hear sound but cannot see video / etc</i>.</p>
+    <p align='left'><i style='color: red;'>Only MP4 video and MP3 audio are supported in this web application</i>. You can download the media directly to your computer (links are below) and run it there, <i style='color: red;'>if you have trouble seeing video / etc</i>.</p>
 
+    <?php
+    if ( $is_mp4 ) {
+    ?>
     <div class='center_content' align='center'>
 	
-	<video class='video_hover' id='video_<?=$app_var?>' poster="videos/<?=str_replace(".mp4", ".png", $filename)?>" width="640" height="480" preload="none" controls='controls' onclick="vidplay_<?=$app_var?>()">
-	<source src="videos/<?=$filename?>" />
+	<video class='video_hover' id='video_<?=$app_var?>' poster="media/<?=str_replace(".blank", ".png", $filename)?>" width="640" height="480" preload="none" controls='controls' onclick="vidplay_<?=$app_var?>()">
+	<source src="media/<?=str_replace(".blank", ".mp4", $filename)?>" />
 	<progress max="100" value="80"></progress>
 	</video>
 	
@@ -152,19 +179,39 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
     To show additional video controls, hover mouse pointer over video while playing.
     </div>
     
+    <?php
+    }
+    if ( $is_mp3 ) {
+    ?>
+    
     <div class='center_content' align='center'>
 	
 	<audio class='' id='audio_<?=$app_var?>' controls='controls'>
-	<source src="videos/<?=str_replace(".mp4", ".mp3", $filename)?>" type="audio/mpeg">
+	<source src="media/<?=str_replace(".blank", ".mp3", $filename)?>" type="audio/mpeg">
 	</audio>
 	
     </div>
+    
+    <?php
+    }
+    ?>
+    
     <div class='center_content' align='center'>
 	
 	
 	Use player controls for: <select id='switch_<?=$app_var?>'>
+	    <?php
+	    if ( $is_mp4 ) {
+	    ?>
 	    <option value='video'> Video MP4 </option>
+	    <?php
+	    }
+	    if ( $is_mp3 ) {
+	    ?>
 	    <option value='audio' selected> Audio MP3 </option>
+	    <?php
+	    }
+	    ?>
 	</select>  &nbsp;
 	<button id="restart_<?=$app_var?>" onclick="restart_<?=$app_var?>();"> Restart </button>  &nbsp; 
 	<button id="rew_<?=$app_var?>" onclick="skip_<?=$app_var?>(-30)"> &lt;&lt;&lt; Skip Back </button> &nbsp; 
@@ -212,19 +259,35 @@ $total_minutes = number_format(( $total_raw_seconds / 60 ), 2, '.', '');
 	
     </div>
     
+    <?php
+    if ( $is_mp3 ) {
+    ?>
     <div class='center_content' align='center'>
 	
 	<span style='color: red;'><?=$length?> <?=strtolower($measure)?> of data, displaying amplitudes of <?=$amplitude_minimum?> or greater. <?=( $chart_width > 900 ? 'This chart <i>has a horizontal scroll bar on the bottom</i> because the chart is wide.' : '' )?> <?=( $no_preset ? '<p><b>This media <i>has no amplitude data of '.$amplitude_minimum.' or higher</i>.</b></p>' : '' )?></span><br />
-	<div align='center' style='position: relative; width: 100%; height: auto;'><iframe align='center' style='position: relative;' width='920' height='315' src='iframe.php?levels=<?=str_replace(".mp4", ".levels", $filename)?>'></iframe></div>
+	<div align='center' style='position: relative; width: 100%; height: auto;'><iframe align='center' style='position: relative;' width='920' height='315' src='iframe.php?levels=<?=str_replace(".blank", ".levels", $filename)?>'></iframe></div>
 	
     </div>
+    <?php
+    }
+    ?>
     
     <div class='center_content' align='center'>
 	
 	<b>
 	(Opposite-click download links below, 'Save As' to download)<br /><br />
-	MP4 Video and Audio Download: <a href='videos/<?=$filename?>' target='_blank'><?=$filename?></a><br /><br />
-	MP3 <i>Audio Only</i> Download (smaller file): <a href='videos/<?=str_replace(".mp4", ".mp3", $filename)?>' target='_blank'><?=str_replace(".mp4", ".mp3", $filename)?></a><br /><br />
+	<?php
+	if ( $is_mp4 ) {
+	?>
+	MP4 Video and Audio Download: <a href='media/<?=str_replace(".blank", ".mp4", $filename)?>' target='_blank'><?=str_replace(".blank", ".mp4", $filename)?></a><br /><br />
+	<?php
+	}
+	if ( $is_mp3 ) {
+	?>
+	MP3 <i>Audio Only</i> Download (smaller than MP4): <a href='media/<?=str_replace(".blank", ".mp3", $filename)?>' target='_blank'><?=str_replace(".blank", ".mp3", $filename)?></a><br /><br />
+	<?php
+	}
+	?>
 	</b>
     
     </div>
