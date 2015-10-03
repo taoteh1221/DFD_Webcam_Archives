@@ -15,7 +15,7 @@ VIDEO_FILE="webcam_recording.asf"
 VIDEO_MINUTES="720"
 
 #Get amplitudes (noise levels) larger than this amplitude
-LEVEL_ABOVE="0.029999"
+LEVEL_ABOVE="0.019999"
 
 # video / audio / both (lowercase)
 INDEX_MODE="both"
@@ -53,8 +53,11 @@ if [ $INDEX_MODE == "both" ]; then
     
     sleep 2
     
+    #Purge
     > $NAME$START_STAMP.dat
     rm -f $NAME$START_STAMP.dat
+    > $VIDEO_FILE
+    rm -f $VIDEO_FILE
 
 
 elif [ $INDEX_MODE == "video" ]; then
@@ -67,13 +70,19 @@ elif [ $INDEX_MODE == "video" ]; then
     
     #Thumbnail
     /bin/ffmpeg -i $NAME$START_STAMP.mp4 -ss 00:00:05.000 -vframes 1 $NAME$START_STAMP.png > /dev/null 2>&1 &
+
+    sleep 2
+        
+    #Purge
+    > $VIDEO_FILE
+    rm -f $VIDEO_FILE
     
 
 elif [ $INDEX_MODE == "audio" ]; then
     
     
     #mp3
-    /bin/ffmpeg -threads 16 -i $VIDEO_FILE $NAME$START_STAMP.mp3 > /dev/null 2>&1
+    /bin/ffmpeg -threads 16 -i $VIDEO_FILE -codec:a libmp3lame -qscale:a 1 $VIDEO_FILE $NAME$START_STAMP.mp3 > /dev/null 2>&1
     
     #Levels file
     /usr/bin/sox $NAME$START_STAMP.mp3 $NAME$START_STAMP.dat
@@ -81,18 +90,15 @@ elif [ $INDEX_MODE == "audio" ]; then
     
     sleep 2
     
+    #Purge
     > $NAME$START_STAMP.dat
     rm -f $NAME$START_STAMP.dat
+    > $VIDEO_FILE
+    rm -f $VIDEO_FILE
+
 
 
 else
         echo "No indexing method chosen..."
 
 fi
-
-
-sleep 2
-    
-#Purge
-> $VIDEO_FILE
-rm -f $VIDEO_FILE
