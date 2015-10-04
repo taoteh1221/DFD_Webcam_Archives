@@ -82,7 +82,7 @@ elif [ $INDEX_MODE == "audio" ]; then
     
     
     #mp3
-    /bin/ffmpeg -threads 16 -i $VIDEO_FILE -codec:a libmp3lame -qscale:a 1 $VIDEO_FILE $NAME$START_STAMP.mp3 > /dev/null 2>&1
+    /bin/ffmpeg -threads 16 -i $VIDEO_FILE -codec:a libmp3lame -qscale:a 1 $NAME$START_STAMP.mp3 > /dev/null 2>&1
     
     #Levels file
     /usr/bin/sox $NAME$START_STAMP.mp3 $NAME$START_STAMP.dat
