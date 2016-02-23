@@ -84,6 +84,13 @@
 -Updated README to include awk as a required application to run this software
 -------------------------------------------------------------------
 
+-------------------------------------------------------------------
+2016/Feb/23
+-------------------------------------------------------------------
+1.0.1:
+-Updated README / stop-webcam cron script comments to include more setup information
+-------------------------------------------------------------------
+
 
 
 

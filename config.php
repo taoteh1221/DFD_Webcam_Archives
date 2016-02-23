@@ -1,7 +1,7 @@
 <?php
 
 
-$version = '1.0.0';  // 2016/Jan/30th
+$version = '1.0.1';  // 2016/Feb/23rd
 
 $title = 'Webcam - Automated Archiving (last 4 days)';
 

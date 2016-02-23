@@ -2,8 +2,10 @@
 
 ### START CONFIG #################################################
 
-#Have ffmpeg (with H.264 and MP4 support) / lame / sox installed
+#https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu
+#Have ffmpeg (with H.264 and MP4 support) / lame / sox / awk installed
 #Make sure ALL /bin/ paths match your system's setup (via "whereis xxxx" command in a terminal)...
+#MAY need: "apt-get install libsox-fmt-mp3" for sox MP3 support
 
 #FULL system path to your video recording directory
 VIDEO_DIR="/home/YOUR_USERNAME_HERE/path/to/recordings/"
